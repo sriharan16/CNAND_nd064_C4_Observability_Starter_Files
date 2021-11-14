@@ -14,7 +14,7 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   # Use any version between 15.2.31.300 and 15.2.31.570
   config.vm.box = "opensuse/Leap-15.2.x86_64"
-  config.vm.box_version = "15.2.31.354"
+  config.vm.box_version = "15.2.31.584"
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -37,6 +37,7 @@ Vagrant.configure("2") do |config|
   #config.vm.network "forwarded_port", guest: 8000, host: 8888
   config.vm.network "forwarded_port", guest: 8888, host: 8888
   config.vm.network "forwarded_port", guest: 8000, host: 8000
+  config.vm.network "forwarded_port", guest: 6443, host: 6443 # API Access
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -52,6 +53,8 @@ Vagrant.configure("2") do |config|
   # your network.
   # config.vm.network "public_network"
 
+  config.vm.boot_timeout = 600 # wait max 10 minutes
+
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
@@ -64,11 +67,12 @@ Vagrant.configure("2") do |config|
   #
   config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
+    # vb.gui = true
   #
   #   # Customize the amount of memory on the VM:clear
 
     vb.memory = "4096"
+    # vb.memory = "3072"
     #vb.memory = "2048"
     vb.name = "k3s"
   end

@@ -13,6 +13,10 @@ from opentelemetry.sdk.trace.export import (
     ConsoleSpanExporter,
     SimpleExportSpanProcessor,
 )
+from prometheus_flask_exporter import PrometheusMetrics
+from prometheus_flask_exporter.multiprocess import GunicornInternalPrometheusMetrics
+import os
+import logging
 
 trace.set_tracer_provider(TracerProvider())
 trace.get_tracer_provider().add_span_processor(
@@ -20,6 +24,12 @@ trace.get_tracer_provider().add_span_processor(
 )
 
 app = Flask(__name__)
+is_gunicorn = "gunicorn" in os.environ.get("SERVER_SOFTWARE", "")
+if is_gunicorn:
+    metrics = GunicornInternalPrometheusMetrics(app)
+else:
+    metrics = PrometheusMetrics(app)
+
 FlaskInstrumentor().instrument_app(app)
 RequestsInstrumentor().instrument()
 
